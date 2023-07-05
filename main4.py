@@ -51,16 +51,12 @@ def is_turn(r, c):
     piece = board.select(r, c)
     if piece is None:
         return True
-    # elif board.is_king_in_check(current_player):
-    #     if isinstance(piece, King) and piece.color == current_player:
-    #         return True
-        # else:
-        #     return False
+    elif piece.color == current_player:
+        return True
+    elif selected_pos is not None:
+        return True
     else:
-        if piece is not None and piece.color == current_player:
-            return True
-        else:
-            return False
+        return False
 
 def is_game_over():
     """
@@ -89,26 +85,26 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            pos = event.pos
-            r, c = click(pos)
+                    pos = event.pos
+                    r, c = click(pos)
 
-            if is_turn(r, c):
-                if selected_pos is None:
-                    piece = board.select(r, c)
+                    if is_turn(r, c):
+                        if selected_pos is None:
+                            piece = board.select(r, c)
 
-                    if piece is not None:
-                        selected_pos = (r, c)
-                        valid_moves_selected_p = board.get_piece_moves(r, c)
-                else:
-                    flag = board.move(*selected_pos, r, c)
+                            if piece is not None:
+                                selected_pos = (r, c)
+                                valid_moves_selected_p = board.get_piece_moves(r, c)
+                        else:
+                            flag = board.move(*selected_pos, r, c)
 
-                    if flag:
-                        change_turn()
+                            if flag:
+                                change_turn()
 
-                    selected_pos = None
-                    valid_moves_selected_p = None
-
+                            selected_pos = None
+                            valid_moves_selected_p = None
     # Draw the board and pieces
     view.draw_board(screen)
     view.draw_pieces(board.board, screen)
@@ -117,6 +113,7 @@ while running:
     if selected_pos is not None:
         view.highlight_pos(screen, *selected_pos)
         cap = board.can_capture(*selected_pos)
+        # print(cap)
         view.highlight_valid_moves(screen, valid_moves_selected_p, cap)
         view.highlight_capturing(screen, cap)
 
